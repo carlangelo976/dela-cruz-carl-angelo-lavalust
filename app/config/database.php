@@ -59,11 +59,11 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 $database['main'] = array(
     'driver'	=> 'mysql',          
-    'hostname'	=> 'localhost',     
-    'port'		=> '3306',           
-    'username'	=> 'root',           
-    'password'	=> '',               
-    'database'	=> 'allen_lab1_db',  
+    'hostname'	=> DB_HOST,     
+    'port'		=> DB_PORT,           
+    'username'	=> DB_USER,           
+    'password'	=> DB_PASSWORD,               
+    'database'	=> DB_NAME,  
     'charset'	=> 'utf8mb4',        
     'dbprefix'	=> '',
     'path'      => ''            
