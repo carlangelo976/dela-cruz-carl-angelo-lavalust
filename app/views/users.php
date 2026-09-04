@@ -5,284 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
     <style>
-        /* ── Google Font ── */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;600;700&display=swap');
-
-        /* ── CSS Variables ── */
-        :root {
-            --desk-from: #5c4a3a;
-            --desk-to: #3b2e22;
-            --leather-from: #2e2320;
-            --leather-to: #1a1412;
-            --gold: #c9a84c;
-            --gold-dim: #8a7233;
-            --paper: #f5eed6;
-            --paper-edge: #e6d9b8;
-            --ink: #2c1e10;
-            --ink-light: #6b5740;
-            --row-even: rgba(255,255,255,0.06);
-            --row-hover: rgba(201,168,76,0.12);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 40px 20px;
-            font-family: 'Source Sans 3', Georgia, serif;
-            color: var(--ink);
-
-            /* ── Wooden Desk Surface ── */
-            background:
-                /* subtle wood grain lines */
-                repeating-linear-gradient(
-                    87deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(0,0,0,0.03) 2px,
-                    rgba(0,0,0,0.03) 4px
-                ),
-                /* desk gradient */
-                linear-gradient(160deg, var(--desk-from) 0%, var(--desk-to) 100%);
-            background-attachment: fixed;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            overflow-x: hidden;
         }
 
-        /* ── Main Card (Leather Portfolio) ── */
-        .portfolio {
-            width: 100%;
-            max-width: 900px;
-            border-radius: 16px;
-            padding: 48px 44px 52px;
-
-            /* leather gradient */
-            background:
-                /* stitch-line texture */
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 28px,
-                    rgba(201,168,76,0.04) 28px,
-                    rgba(201,168,76,0.04) 29px
-                ),
-                radial-gradient(
-                    ellipse at 30% 20%,
-                    rgba(201,168,76,0.08) 0%,
-                    transparent 60%
-                ),
-                linear-gradient(170deg, var(--leather-from) 0%, var(--leather-to) 100%);
-
-            /* raised surface — key skeuomorphism technique */
-            box-shadow:
-                /* outer drop shadow (lifted off desk) */
-                0 22px 60px rgba(0,0,0,0.55),
-                0 4px 16px rgba(0,0,0,0.35),
-                /* top-left highlight rim */
-                inset 0 1.5px 0 rgba(255,255,255,0.08),
-                /* bottom-right inner shadow (depth) */
-                inset 0 -2px 4px rgba(0,0,0,0.25),
-                /* subtle inner glow */
-                inset 0 0 80px rgba(0,0,0,0.12);
-
-            border: 1px solid rgba(201,168,76,0.15);
-            position: relative;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* ── Gold embossed border ring ── */
-        .portfolio::before {
+        /* Decorative floating orbs behind the glass */
+        body::before,
+        body::after {
             content: '';
-            position: absolute;
-            inset: 8px;
-            border-radius: 10px;
-            border: 1.5px solid rgba(201,168,76,0.12);
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            z-index: 0;
             pointer-events: none;
         }
 
-        /* ── Title ── */
+        body::before {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #ff6b6b, #feca57);
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #48dbfb, #0abde3);
+            bottom: -150px;
+            right: -150px;
+        }
+
         h1 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--gold);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 36px;
-
-            /* embossed / pressed-in text effect */
-            text-shadow:
-                0 1px 0 rgba(0,0,0,0.6),
-                0 -1px 0 rgba(255,255,255,0.08);
-
             position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
         }
 
-        /* decorative rule under title */
-        h1::after {
-            content: '';
-            display: block;
-            margin: 14px auto 0;
-            width: 180px;
-            height: 2px;
-            border-radius: 1px;
+        /* Glass container */
+        .glass-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 24px;
+            padding: 3px;
             background: linear-gradient(
-                90deg,
-                transparent 0%,
-                var(--gold-dim) 20%,
-                var(--gold) 50%,
-                var(--gold-dim) 80%,
-                transparent 100%
+                135deg,
+                rgba(255, 255, 255, 0.6) 0%,
+                rgba(255, 255, 255, 0.1) 40%,
+                rgba(255, 255, 255, 0.05) 60%,
+                rgba(255, 255, 255, 0.3) 100%
             );
-            box-shadow: 0 1px 3px rgba(201,168,76,0.25);
-        }
-
-        /* ── Table Container (Paper Sheet) ── */
-        .paper-sheet {
-            border-radius: 8px;
-            overflow: hidden;
-
-            /* paper surface */
-            background:
-                /* subtle paper fiber texture */
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 1px,
-                    rgba(0,0,0,0.008) 1px,
-                    rgba(0,0,0,0.008) 2px
-                ),
-                linear-gradient(175deg, var(--paper) 0%, var(--paper-edge) 100%);
-
-            /* paper lifted off leather */
             box-shadow:
-                0 8px 28px rgba(0,0,0,0.35),
-                0 2px 6px rgba(0,0,0,0.22),
-                inset 0 1px 0 rgba(255,255,255,0.6),
-                inset 0 -1px 0 rgba(0,0,0,0.05);
-
-            border: 1px solid rgba(0,0,0,0.08);
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        /* ── Table Reset ── */
+        .glass-inner {
+            border-radius: 22px;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.15) 100%
+            );
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            overflow: hidden;
+        }
+
+        /* Top reflection highlight */
+        .glass-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.0) 100%
+            );
+            border-radius: 22px 22px 0 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            border: none;
+            position: relative;
+            z-index: 1;
         }
 
-        /* ── Header Row ── */
         thead tr {
-            background:
-                linear-gradient(
-                    180deg,
-                    #4a3d30 0%,
-                    #3a2f24 60%,
-                    #2e241b 100%
-                );
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        thead th {
-            font-family: 'Source Sans 3', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.6px;
-            color: var(--gold);
-            padding: 16px 20px;
+        th {
+            padding: 18px 20px;
             text-align: left;
-
-            /* beveled header cell */
-            border-right: 1px solid rgba(0,0,0,0.18);
-            border-bottom: 1px solid rgba(0,0,0,0.3);
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.15);
-
-            /* pressed-in label */
-            text-shadow:
-                0 1px 2px rgba(0,0,0,0.5),
-                0 -1px 0 rgba(255,255,255,0.06);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        thead th:last-child { border-right: none; }
-
-        /* ── Body Rows ── */
         tbody tr {
-            transition: background 0.2s ease, box-shadow 0.2s ease;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            transition: background 0.3s ease;
         }
 
-        tbody tr:nth-child(even) {
-            background: var(--row-even);
+        tbody tr:last-child {
+            border-bottom: none;
         }
 
         tbody tr:hover {
-            background: var(--row-hover);
-            /* subtle lift on hover */
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.08),
-                inset 0 1px 0 rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.12);
         }
 
-        tbody td {
-            font-family: 'Source Sans 3', sans-serif;
-            font-size: 15px;
+        td {
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 400;
-            color: var(--ink);
-            padding: 14px 20px;
-
-            border-right: 1px solid rgba(0,0,0,0.05);
-
-            /* slightly inked text */
-            text-shadow: 0 0 1px rgba(44,30,16,0.15);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
-        tbody td:last-child { border-right: none; }
-
-        /* ── ID column: monospaced for numbers ── */
-        tbody td:first-child {
-            font-weight: 600;
-            color: var(--ink-light);
-            font-variant-numeric: tabular-nums;
+        /* Subtle scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
 
-        /* ── Email column: muted ── */
-        tbody td:nth-child(4) {
-            color: var(--ink-light);
-            font-size: 14px;
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
         }
 
-        /* ── Responsive ── */
-        @media (max-width: 700px) {
-            .portfolio { padding: 28px 16px 36px; }
-            h1 { font-size: 24px; letter-spacing: 1px; }
-            thead th, tbody td { padding: 10px 12px; font-size: 13px; }
-            thead th { font-size: 11px; letter-spacing: 1px; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
         }
 
-        /* ── Subtle entrance animation ── */
-        @keyframes settle {
-            0%   { opacity: 0; transform: translateY(18px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .portfolio {
-            animation: settle 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
 
-        @media (prefers-reduced-motion: reduce) {
-            .portfolio { animation: none; }
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.8rem;
+            }
+
+            .glass-container {
+                border-radius: 16px;
+            }
+
+            .glass-inner {
+                border-radius: 14px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="portfolio">
+    <h1>Users List</h1>
 
-        <h1>Users List</h1>
-
-        <div class="paper-sheet">
+    <div class="glass-container">
+        <div class="glass-inner">
             <table>
                 <thead>
                     <tr>
@@ -307,7 +237,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 
 </body>
