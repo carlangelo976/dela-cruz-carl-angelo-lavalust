@@ -387,14 +387,7 @@
 
     <!-- Noise -->
     <div class="noise"></div>
-
-    <!-- Fixed Back Button -->
-    <a href="<?= site_url('/') ?>" class="back-float" id="backBtn">
-        <span class="back-arrow">
-            <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
-        </span>
-        Back to Dashboard
-    </a>
+    
 
     <!-- ════════════════════════════════════════ -->
     <!-- PARALLAX HEADER                          -->
@@ -509,16 +502,7 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Bottom Action Button -->
-            <div style="text-align:center; margin-top:40px;" class="reveal-up">
-                <a href="<?= site_url('/') ?>" class="glass-btn">
-                    <span class="btn-arrow">
-                        <i data-lucide="arrow-left" style="width:15px;height:15px;"></i>
-                    </span>
-                    <span style="position:relative;z-index:1;">Back to Dashboard</span>
-                </a>
-            </div>
+    
 
         </div>
     </section>
