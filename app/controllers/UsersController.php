@@ -6,12 +6,12 @@
        public function __construct()
        {
            parent::__construct();
-           // $this->call->model('UsersModel'); // <-- TEMPORARILY COMMENTED OUT
+            $this->call->model('UsersModel');
        }
 
        public function index()
        {
-           // $users = $this->UsersModel->all(); // <-- TEMPORARILY COMMENTED OUT
-           $this->call->view('users', ['users' => []]); // Pass empty array for now
+           $users = $this->UsersModel->all();
+           $this->call->view('users', ['users' => []]); 
        }
    }
