@@ -1,17 +1,17 @@
-   <?php
-   defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
+<?php
+defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
-   class UserController extends Controller
-   {
-       public function __construct()
-       {
-           parent::__construct();
-            $this->call->model('UsersModel');
-       }
+class UserController extends Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->call->model('UsersModel');
+    }
 
-       public function index()
-       {
-           $users = $this->UsersModel->all();
-           $this->call->view('users', ['users' => []]); 
-       }
-   }
+    public function index()
+    {
+        $users = $this->UsersModel->all();
+        $this->call->view('users', ['users' => $users]);
+    }
+}
