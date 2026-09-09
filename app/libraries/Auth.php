@@ -31,7 +31,7 @@ class Auth
      */
     public function login($username, $password)
     {
-        $user = $this->_lava->db->table('users')
+        $user = $this->_lava->db->table('user1')
                         ->where('username', $username)
                         ->get();
 
