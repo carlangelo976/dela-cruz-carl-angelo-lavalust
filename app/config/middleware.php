@@ -7,3 +7,7 @@ require_once __DIR__ . '/../middlewares/StudentMiddleware.php';
 $config['middlewares'] = [
     'StudentMiddleware' => new StudentMiddleware(),
 ];
+
+$config['middlewares'] = array(
+    'auth' => load_class('AuthMiddleware', 'middlewares'),
+);
