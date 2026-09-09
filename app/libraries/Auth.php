@@ -19,7 +19,7 @@ class Auth
     {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        return $this->_lava->db->table('users')->insert([
+        return $this->_lava->db->table('user1')->insert([
             'username'   => $username,
             'password'   => $hash,
             'created_at' => date('Y-m-d H:i:s'),
