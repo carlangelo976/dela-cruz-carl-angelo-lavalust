@@ -19,14 +19,7 @@ $router->match('/login', 'AuthController::login', ['GET', 'POST']);
 $router->match('/register', 'AuthController::register', ['GET', 'POST']); // remove/protect before real production use
 $router->get('/logout', 'AuthController::logout');
  
-/*
-|--------------------------------------------------------------------------
-| Protected product management routes
-|--------------------------------------------------------------------------
-| Every route below requires an authenticated session (see
-| app/middlewares/AuthMiddleware.php). Matches the exact protected paths
-| required by the lab exercise.
-*/
+
 $router->get('/products', 'ProductController::index')
        ->middleware('auth');
  

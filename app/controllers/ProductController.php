@@ -9,14 +9,14 @@ class ProductController extends Controller
         $this->call->model('ProductModel');
     }
 
-    // Read — display all products
+    
     public function index()
     {
         $data['products'] = $this->ProductModel->getAll();
         $this->call->view('products/index', $data);
     }
 
-    // Create — add a product
+    
     public function create()
     {
         if ($this->io->method() == 'post') {
@@ -33,7 +33,7 @@ class ProductController extends Controller
         $this->call->view('products/create');
     }
 
-    // Update — edit a product
+   
     public function edit($id)
     {
         $data['product'] = $this->ProductModel->getById($id);
@@ -51,7 +51,7 @@ class ProductController extends Controller
         $this->call->view('products/edit', $data);
     }
 
-    // Delete — remove a product
+    
     public function delete($id)
     {
         $this->ProductModel->deleteProduct($id);

@@ -12,9 +12,7 @@ class Auth
         $this->_lava->call->library('session');
     }
 
-    /**
-     * Create a new user with a securely hashed password.
-     */
+    
     public function register($username, $password)
     {
         $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -26,9 +24,7 @@ class Auth
         ]);
     }
 
-    /**
-     * Verify credentials and start an authenticated session.
-     */
+   
     public function login($username, $password)
     {
         $user = $this->_lava->db->table('user1')

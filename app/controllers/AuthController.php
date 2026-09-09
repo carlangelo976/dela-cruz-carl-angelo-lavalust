@@ -31,8 +31,7 @@ class AuthController extends Controller
         $this->call->view('auth/login', $data);
     }
 
-    // Convenience page for creating a test account. Protect or remove this
-    // route before deploying somewhere the whole internet can see it.
+    
     public function register()
     {
         $data = ['error' => null];
