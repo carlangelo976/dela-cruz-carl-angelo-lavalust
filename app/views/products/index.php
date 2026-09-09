@@ -34,7 +34,6 @@
                 <th>Description</th>
                 <th>Price</th>
                 <th>Qty</th>
-                <th>Created</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -47,7 +46,6 @@
                         <td><?= html_escape($product['description']) ?></td>
                         <td><?= number_format((float) $product['price'], 2) ?></td>
                         <td><?= html_escape($product['quantity']) ?></td>
-                        <td><?= html_escape($product['created_at']) ?></td>
                         <td>
                             <a class="btn btn-edit" href="<?= site_url('products/edit/' . $product['id']) ?>">Edit</a>
                             <a class="btn btn-delete" href="<?= site_url('products/delete/' . $product['id']) ?>"
@@ -56,7 +54,7 @@
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
-                <tr><td colspan="7" class="empty">No products yet. Add your first one.</td></tr>
+                <tr><td colspan="6" class="empty">No products yet. Add your first one.</td></tr>
             <?php endif; ?>
         </tbody>
     </table>
