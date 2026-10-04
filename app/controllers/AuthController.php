@@ -59,8 +59,12 @@ class AuthController extends Controller
 
     public function apiLogin()
     {
-        $username = $this->io->post('username');
-        $password = $this->io->post('password');
+        // api->body() reads JSON as well as form encoded input. io->post()
+        // only reads $_POST, which is empty for a JSON login request.
+        $data = $this->api->body();
+
+        $username = $data['username'] ?? NULL;
+        $password = $data['password'] ?? NULL;
 
         // Validate username and password
         if (!$username || !$password) {

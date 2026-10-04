@@ -10,39 +10,11 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
  *
  * Copyright (c) 2020 Ronald M. Marasigan
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package LavaLust
- * @author Ronald M. Marasigan <ronald.marasigan@yahoo.com>
- * @since Version 4
- * @link https://github.com/ronmarasigan/LavaLust
- * @license https://opensource.org/licenses/MIT MIT License
+ * ------------------------------------------------------------------
+ * Class Response
+ * ------------------------------------------------------------------
  */
 
-/**
- * ------------------------------------------------------
- *  Class Response
- * ------------------------------------------------------
- *
- * Handles HTTP responses, status codes, headers, content types,
- * and provides convenient methods for common response formats.
- */
 class Response
 {
     /**
@@ -89,6 +61,7 @@ class Response
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
+
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -96,12 +69,14 @@ class Response
         204 => 'No Content',
         205 => 'Reset Content',
         206 => 'Partial Content',
+
         301 => 'Moved Permanently',
         302 => 'Found',
         303 => 'See Other',
         304 => 'Not Modified',
         307 => 'Temporary Redirect',
         308 => 'Permanent Redirect',
+
         400 => 'Bad Request',
         401 => 'Unauthorized',
         403 => 'Forbidden',
@@ -112,11 +87,17 @@ class Response
         410 => 'Gone',
         422 => 'Unprocessable Entity',
         429 => 'Too Many Requests',
+
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
         503 => 'Service Unavailable',
     );
+
+
+    // ---------------------------------------------------------------
+    // CONSTRUCTOR
+    // ---------------------------------------------------------------
 
     /**
      * Class constructor
@@ -130,6 +111,7 @@ class Response
         $this->status_code = $status_code;
     }
 
+
     // ---------------------------------------------------------------
     // STATUS CODE
     // ---------------------------------------------------------------
@@ -137,14 +119,16 @@ class Response
     /**
      * Set HTTP Status Code
      *
-     * @param  int $status_code
+     * @param int $status_code
      * @return $this
      */
     public function set_status_code($status_code)
     {
         $this->status_code = (int) $status_code;
+
         return $this;
     }
+
 
     /**
      * Get current HTTP status code
@@ -156,70 +140,85 @@ class Response
         return $this->status_code;
     }
 
+
     /**
-     * Get the status text for the current (or given) status code
+     * Get status text
      *
-     * @param  int|null $code  Defaults to the current status code
+     * @param int|null $code
      * @return string
      */
     public function get_status_text($code = NULL)
     {
         $code = $code ?: $this->status_code;
-        return isset(self::$status_texts[$code]) ? self::$status_texts[$code] : 'Unknown';
+
+        return isset(self::$status_texts[$code])
+            ? self::$status_texts[$code]
+            : 'Unknown';
     }
 
+
     /**
-     * Check if the response status code is informational (1xx)
+     * Check if informational
      *
      * @return boolean
      */
     public function is_informational()
     {
-        return $this->status_code >= 100 && $this->status_code < 200;
+        return $this->status_code >= 100 &&
+               $this->status_code < 200;
     }
 
+
     /**
-     * Check if the response is successful (2xx)
+     * Check if successful
      *
      * @return boolean
      */
     public function is_successful()
     {
-        return $this->status_code >= 200 && $this->status_code < 300;
+        return $this->status_code >= 200 &&
+               $this->status_code < 300;
     }
 
+
     /**
-     * Check if the response is a redirect (3xx)
+     * Check if redirect
      *
      * @return boolean
      */
     public function is_redirect()
     {
-        return $this->status_code >= 300 && $this->status_code < 400;
+        return $this->status_code >= 300 &&
+               $this->status_code < 400;
     }
 
+
     /**
-     * Check if the response is a client error (4xx)
+     * Check if client error
      *
      * @return boolean
      */
     public function is_client_error()
     {
-        return $this->status_code >= 400 && $this->status_code < 500;
+        return $this->status_code >= 400 &&
+               $this->status_code < 500;
     }
 
+
     /**
-     * Check if the response is a server error (5xx)
+     * Check if server error
      *
      * @return boolean
      */
     public function is_server_error()
     {
-        return $this->status_code >= 500 && $this->status_code < 600;
+        return $this->status_code >= 500 &&
+               $this->status_code < 600;
     }
 
+
     /**
-     * Check if the response is any kind of error (4xx or 5xx)
+     * Check if error
      *
      * @return boolean
      */
@@ -228,10 +227,11 @@ class Response
         return $this->status_code >= 400;
     }
 
+
     /**
-     * Check if the response has a specific status code
+     * Check if specific status
      *
-     * @param  int $code
+     * @param int $code
      * @return boolean
      */
     public function is_status($code)
@@ -239,16 +239,16 @@ class Response
         return $this->status_code === (int) $code;
     }
 
+
     // ---------------------------------------------------------------
     // HEADERS
     // ---------------------------------------------------------------
 
     /**
      * Add Response Header(s)
-     * Accepts a single name/value pair or an associative array of headers.
      *
-     * @param  string|array $name
-     * @param  string       $value
+     * @param string|array $name
+     * @param string $value
      * @return $this
      */
     public function add_header($name, $value = '')
@@ -268,10 +268,11 @@ class Response
         return $this;
     }
 
+
     /**
-     * Remove a response header by name
+     * Remove response header
      *
-     * @param  string $name
+     * @param string $name
      * @return $this
      */
     public function remove_header($name)
@@ -284,10 +285,11 @@ class Response
         return $this;
     }
 
+
     /**
-     * Check if a response header has been set
+     * Check response header
      *
-     * @param  string $name
+     * @param string $name
      * @return boolean
      */
     public function has_header($name)
@@ -295,16 +297,20 @@ class Response
         return isset($this->headers[$name]);
     }
 
+
     /**
-     * Get a single response header value
+     * Get response header
      *
-     * @param  string $name
+     * @param string $name
      * @return string|null
      */
     public function get_header($name)
     {
-        return isset($this->headers[$name]) ? $this->headers[$name] : NULL;
+        return isset($this->headers[$name])
+            ? $this->headers[$name]
+            : NULL;
     }
+
 
     /**
      * Get all response headers
@@ -316,46 +322,78 @@ class Response
         return $this->headers;
     }
 
+
     /**
-     * Set the Content-Type header
+     * Set Content-Type
      *
-     * @param  string $mime     MIME type (e.g. 'application/json')
-     * @param  string $charset  Character set (default: utf-8)
+     * @param string $mime
+     * @param string $charset
      * @return $this
      */
     public function content_type($mime, $charset = 'utf-8')
     {
-        $value = $charset ? $mime . '; charset=' . $charset : $mime;
-        return $this->add_header('Content-Type', $value);
+        $value = $charset
+            ? $mime . '; charset=' . $charset
+            : $mime;
+
+        return $this->add_header(
+            'Content-Type',
+            $value
+        );
     }
 
+
     /**
-     * Set cache control headers
-     * Pass 0 or a negative number to disable caching entirely.
+     * Set cache headers
      *
-     * @param  int    $seconds  Max age in seconds. 0 = no-cache.
-     * @param  string $visibility  'public' or 'private' (default: 'public')
+     * @param int $seconds
+     * @param string $visibility
      * @return $this
      */
-    public function cache($seconds = 3600, $visibility = 'public')
+    public function cache(
+        $seconds = 3600,
+        $visibility = 'public'
+    )
     {
         if ($seconds <= 0)
         {
-            $this->add_header('Cache-Control', 'no-store, no-cache, must-revalidate');
-            $this->add_header('Pragma', 'no-cache');
-            $this->add_header('Expires', '0');
+            $this->add_header(
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate'
+            );
+
+            $this->add_header(
+                'Pragma',
+                'no-cache'
+            );
+
+            $this->add_header(
+                'Expires',
+                '0'
+            );
         }
         else
         {
-            $this->add_header('Cache-Control', $visibility . ', max-age=' . $seconds);
-            $this->add_header('Expires', gmdate('D, d M Y H:i:s', time() + $seconds) . ' GMT');
+            $this->add_header(
+                'Cache-Control',
+                $visibility . ', max-age=' . $seconds
+            );
+
+            $this->add_header(
+                'Expires',
+                gmdate(
+                    'D, d M Y H:i:s',
+                    time() + $seconds
+                ) . ' GMT'
+            );
         }
 
         return $this;
     }
 
+
     /**
-     * Disable all caching on this response
+     * Disable caching
      *
      * @return $this
      */
@@ -364,63 +402,210 @@ class Response
         return $this->cache(0);
     }
 
+
     /**
-     * Add common security headers (HSTS, X-Frame-Options, etc.)
+     * Security headers
      *
-     * @param  array $overrides  Override specific headers
+     * @param array $overrides
      * @return $this
      */
-    public function with_security_headers($overrides = array())
+    public function with_security_headers(
+        $overrides = array()
+    )
     {
         $defaults = array(
-            'X-Content-Type-Options'    => 'nosniff',
-            'X-Frame-Options'           => 'SAMEORIGIN',
-            'X-XSS-Protection'          => '1; mode=block',
-            'Referrer-Policy'           => 'strict-origin-when-cross-origin',
-            'Permissions-Policy'        => 'geolocation=(), microphone=()',
+            'X-Content-Type-Options' =>
+                'nosniff',
+
+            'X-Frame-Options' =>
+                'SAMEORIGIN',
+
+            'X-XSS-Protection' =>
+                '1; mode=block',
+
+            'Referrer-Policy' =>
+                'strict-origin-when-cross-origin',
+
+            'Permissions-Policy' =>
+                'geolocation=(), microphone=()',
         );
 
-        return $this->add_header(array_merge($defaults, $overrides));
+        return $this->add_header(
+            array_merge(
+                $defaults,
+                $overrides
+            )
+        );
     }
 
+
+    // ---------------------------------------------------------------
+    // CORS
+    // ---------------------------------------------------------------
+
     /**
-     * Add CORS headers to the response
+     * Add CORS headers
      *
-     * @param  string $origin   Allowed origin (default: *)
-     * @param  string $methods  Allowed methods
-     * @param  string $headers  Allowed headers
-     * @param  bool   $credentials  Allow credentials
+     * @param string $origin
+     * @param string $methods
+     * @param string $headers
+     * @param bool $credentials
      * @return $this
      */
-    public function with_cors($origin = '*', $methods = 'GET, POST, PUT, PATCH, DELETE, OPTIONS', $headers = 'Content-Type, Authorization', $credentials = FALSE)
+    public function with_cors(
+        $origin = '*',
+        $methods = 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        $headers = 'Content-Type, Authorization, Accept, X-Requested-With',
+        $credentials = FALSE
+    )
     {
-        $this->add_header('Access-Control-Allow-Origin', $origin);
-        $this->add_header('Access-Control-Allow-Methods', $methods);
-        $this->add_header('Access-Control-Allow-Headers', $headers);
+        /*
+         * Allow Origin
+         */
+        $this->add_header(
+            'Access-Control-Allow-Origin',
+            $origin
+        );
 
+        /*
+         * Allow Methods
+         */
+        $this->add_header(
+            'Access-Control-Allow-Methods',
+            $methods
+        );
+
+        /*
+         * Allow Headers
+         */
+        $this->add_header(
+            'Access-Control-Allow-Headers',
+            $headers
+        );
+
+        /*
+         * Preflight cache
+         */
+        $this->add_header(
+            'Access-Control-Max-Age',
+            '86400'
+        );
+
+        /*
+         * Credentials
+         */
         if ($credentials)
         {
-            $this->add_header('Access-Control-Allow-Credentials', 'true');
+            $this->add_header(
+                'Access-Control-Allow-Credentials',
+                'true'
+            );
         }
 
         return $this;
     }
+
+
+    /**
+     * Resolve which origin may be echoed back
+     *
+     * Reads allow_origin from app/config/api.php so this class and the Api
+     * library can never disagree about what is allowed. Returns an empty
+     * string when the caller's origin is not allowed, which makes the
+     * browser block the response.
+     *
+     * @return string
+     */
+    private function resolve_cors_origin()
+    {
+        $origin = isset($_SERVER['HTTP_ORIGIN'])
+            ? $_SERVER['HTTP_ORIGIN']
+            : '';
+
+        $allow = trim(
+            (string) (function_exists('config_item')
+                ? config_item('allow_origin')
+                : '')
+        );
+
+        if ($allow === '' || $allow === '*')
+        {
+            /*
+             * Echo the caller back rather than "*" so credentialed
+             * requests are not rejected. Keep "*" when there is no
+             * Origin at all, e.g. curl or a server side call.
+             */
+            return $origin !== '' ? $origin : '*';
+        }
+
+        $allowed = array_filter(
+            array_map('trim', explode(',', $allow))
+        );
+
+        return in_array($origin, $allowed, TRUE)
+            ? $origin
+            : '';
+    }
+
+
+    /**
+     * Automatically add CORS headers
+     *
+     * @return $this
+     */
+    public function enable_cors()
+    {
+        $allow_origin = $this->resolve_cors_origin();
+
+        if ($allow_origin !== '')
+        {
+            $this->add_header(
+                'Access-Control-Allow-Origin',
+                $allow_origin
+            );
+
+            $this->add_header(
+                'Vary',
+                'Origin'
+            );
+        }
+
+        $this->add_header(
+            'Access-Control-Allow-Methods',
+            'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+        );
+
+        $this->add_header(
+            'Access-Control-Allow-Headers',
+            'Content-Type, Authorization, Accept, X-Requested-With'
+        );
+
+        $this->add_header(
+            'Access-Control-Max-Age',
+            '86400'
+        );
+
+        return $this;
+    }
+
 
     // ---------------------------------------------------------------
     // CONTENT
     // ---------------------------------------------------------------
 
     /**
-     * Set Response Content
+     * Set response content
      *
-     * @param  mixed $content
+     * @param mixed $content
      * @return $this
      */
     public function set_content($content)
     {
         $this->content = $content;
+
         return $this;
     }
+
 
     /**
      * Get response content
@@ -432,102 +617,129 @@ class Response
         return $this->content;
     }
 
+
     /**
-     * Append content to the existing response body
+     * Append content
      *
-     * @param  mixed $content
+     * @param mixed $content
      * @return $this
      */
     public function append_content($content)
     {
         $this->content .= $content;
+
         return $this;
     }
 
+
     /**
-     * Set HTML Response Content
-     * Automatically adds Content-Type: text/html header.
+     * Set HTML content
      *
-     * @param  mixed $content
+     * @param mixed $content
      * @return $this
      */
     public function set_html_content($content)
     {
         $this->content_type('text/html');
+
         $this->set_content($content);
+
         return $this;
     }
 
+
     /**
-     * Set JSON Response Content
-     * Automatically adds Content-Type: application/json header.
+     * Set JSON content
      *
-     * @param  mixed $data
-     * @param  int   $options  JSON encoding options (e.g. JSON_PRETTY_PRINT)
+     * @param mixed $data
+     * @param int $options
      * @return $this
      */
-    public function set_json_content($data, $options = 0)
+    public function set_json_content(
+        $data,
+        $options = 0
+    )
     {
-        $this->content_type('application/json');
-        $this->content = json_encode($data, $options);
+        $this->content_type(
+            'application/json'
+        );
+
+        $this->content = json_encode(
+            $data,
+            $options
+        );
+
         return $this;
     }
 
+
     /**
-     * Set plain text Response Content
-     * Automatically adds Content-Type: text/plain header.
+     * Set plain text
      *
-     * @param  string $content
+     * @param string $content
      * @return $this
      */
     public function set_text_content($content)
     {
-        $this->content_type('text/plain');
+        $this->content_type(
+            'text/plain'
+        );
+
         $this->set_content($content);
+
         return $this;
     }
 
+
     /**
-     * Set XML Response Content
-     * Automatically adds Content-Type: application/xml header.
+     * Set XML content
      *
-     * @param  string $xml
+     * @param string $xml
      * @return $this
      */
     public function set_xml_content($xml)
     {
-        $this->content_type('application/xml');
+        $this->content_type(
+            'application/xml'
+        );
+
         $this->set_content($xml);
+
         return $this;
     }
 
+
     /**
-     * Get the length of the current content body in bytes
+     * Get content length
      *
      * @return int
      */
     public function get_content_length()
     {
-        return strlen((string) $this->content);
+        return strlen(
+            (string) $this->content
+        );
     }
 
+
     /**
-     * Check if the response body is empty
+     * Check empty response
      *
      * @return boolean
      */
     public function is_empty()
     {
-        return $this->content === NULL || $this->content === '';
+        return $this->content === NULL ||
+               $this->content === '';
     }
+
 
     // ---------------------------------------------------------------
     // SEND
     // ---------------------------------------------------------------
 
     /**
-     * Send headers only (no body)
-     * Safe to call multiple times — headers are only sent once.
+     * Send headers
      *
      * @return void
      */
@@ -538,20 +750,87 @@ class Response
             return;
         }
 
-        if ( ! headers_sent())
+        if (!headers_sent())
         {
-            http_response_code($this->status_code);
+            /*
+             * =====================================================
+             * CORS
+             * =====================================================
+             */
 
-            foreach ($this->headers as $name => $value)
+            $allow_origin = $this->resolve_cors_origin();
+
+            if ($allow_origin !== '')
             {
-                header("$name: $value");
+                header(
+                    'Access-Control-Allow-Origin: ' . $allow_origin
+                );
+
+                header('Vary: Origin');
             }
+
+            /*
+             * CORS methods
+             */
+            header(
+                'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS'
+            );
+
+            /*
+             * CORS request headers
+             */
+            header(
+                'Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With'
+            );
+
+            /*
+             * Cache preflight
+             */
+            header(
+                'Access-Control-Max-Age: 86400'
+            );
+
+
+            /*
+             * =====================================================
+             * HTTP STATUS
+             * =====================================================
+             */
+
+            http_response_code(
+                $this->status_code
+            );
+
+
+            /*
+             * =====================================================
+             * NORMAL RESPONSE HEADERS
+             * =====================================================
+             */
+
+            foreach (
+                $this->headers
+                as $name => $value
+            )
+            {
+                header(
+                    "$name: $value"
+                );
+            }
+
+
+            /*
+             * =====================================================
+             * COOKIES
+             * =====================================================
+             */
 
             $this->send_cookies();
         }
 
         $this->headers_sent = TRUE;
     }
+
 
     /**
      * Send cookies
@@ -560,18 +839,34 @@ class Response
      */
     private function send_cookies()
     {
-        foreach ($this->cookies as $cookie)
+        foreach (
+            $this->cookies
+            as $cookie
+        )
         {
             setcookie(
                 $cookie['name'],
                 $cookie['value'],
                 array(
-                    'expires'  => $cookie['expiration'] > 0 ? time() + $cookie['expiration'] : 0,
-                    'path'     => $cookie['path'],
-                    'domain'   => $cookie['domain'],
-                    'secure'   => $cookie['secure'],
-                    'httponly' => $cookie['httponly'],
-                    'samesite' => $cookie['samesite'],
+                    'expires' =>
+                        $cookie['expiration'] > 0
+                            ? time() + $cookie['expiration']
+                            : 0,
+
+                    'path' =>
+                        $cookie['path'],
+
+                    'domain' =>
+                        $cookie['domain'],
+
+                    'secure' =>
+                        $cookie['secure'],
+
+                    'httponly' =>
+                        $cookie['httponly'],
+
+                    'samesite' =>
+                        $cookie['samesite'],
                 )
             );
         }
@@ -579,8 +874,9 @@ class Response
         $this->cookies = array();
     }
 
+
     /**
-     * Send the response — flushes status code, all queued headers, and the content body
+     * Send response
      *
      * @return void
      */
@@ -594,30 +890,47 @@ class Response
         }
     }
 
+
     /**
-     * Send JSON response immediately
+     * Send JSON
      *
-     * @param  mixed $data
-     * @param  int   $status_code
-     * @param  int   $options  JSON encoding options
+     * @param mixed $data
+     * @param int $status_code
+     * @param int $options
      * @return void
      */
-    public function send_json($data, $status_code = 200, $options = 0)
+    public function send_json(
+        $data,
+        $status_code = 200,
+        $options = 0
+    )
     {
-        $this->set_status_code($status_code);
-        $this->set_json_content($data, $options);
+        $this->set_status_code(
+            $status_code
+        );
+
+        $this->set_json_content(
+            $data,
+            $options
+        );
+
         $this->send();
     }
 
+
     /**
-     * Send a structured JSON success response
+     * Send JSON success
      *
-     * @param  mixed  $data
-     * @param  string $message
-     * @param  int    $status_code
+     * @param mixed $data
+     * @param string $message
+     * @param int $status_code
      * @return void
      */
-    public function send_json_success($data = NULL, $message = 'Success', $status_code = 200)
+    public function send_json_success(
+        $data = NULL,
+        $message = 'Success',
+        $status_code = 200
+    )
     {
         $response = array(
             'success' => TRUE,
@@ -629,205 +942,331 @@ class Response
             $response['data'] = $data;
         }
 
-        $this->send_json($response, $status_code);
+        $this->send_json(
+            $response,
+            $status_code
+        );
     }
 
+
     /**
-     * Send a structured JSON error response
+     * Send JSON error
      *
-     * @param  string $message
-     * @param  int    $status_code
-     * @param  array  $additional_data  Extra fields merged into the payload
+     * @param string $message
+     * @param int $status_code
+     * @param array $additional_data
      * @return void
      */
-    public function send_json_error($message, $status_code = 400, $additional_data = array())
+    public function send_json_error(
+        $message,
+        $status_code = 400,
+        $additional_data = array()
+    )
     {
-        $response = array_merge(array(
-            'success' => FALSE,
-            'error'   => $message,
-        ), $additional_data);
+        $response = array_merge(
+            array(
+                'success' => FALSE,
+                'error'   => $message,
+            ),
+            $additional_data
+        );
 
-        $this->send_json($response, $status_code);
+        $this->send_json(
+            $response,
+            $status_code
+        );
     }
 
-    /**
-     * Send a structured JSON validation error response (422)
-     *
-     * @param  array  $errors   Associative array of field => message pairs
-     * @param  string $message
-     * @return void
-     */
-    public function send_json_validation($errors, $message = 'Validation failed')
-    {
-        $this->send_json_error($message, 422, array('errors' => $errors));
-    }
 
     /**
-     * Send HTML response
+     * Send JSON validation error
      *
-     * @param  mixed $content
-     * @param  int   $status_code
+     * @param array $errors
+     * @param string $message
      * @return void
      */
-    public function send_html($content, $status_code = 200)
+    public function send_json_validation(
+        $errors,
+        $message = 'Validation failed'
+    )
     {
-        $this->set_status_code($status_code);
-        $this->set_html_content($content);
+        $this->send_json_error(
+            $message,
+            422,
+            array(
+                'errors' => $errors
+            )
+        );
+    }
+
+
+    /**
+     * Send HTML
+     *
+     * @param mixed $content
+     * @param int $status_code
+     * @return void
+     */
+    public function send_html(
+        $content,
+        $status_code = 200
+    )
+    {
+        $this->set_status_code(
+            $status_code
+        );
+
+        $this->set_html_content(
+            $content
+        );
+
         $this->send();
     }
 
+
     /**
-     * Send plain text response
+     * Send text
      *
-     * @param  string $content
-     * @param  int    $status_code
+     * @param string $content
+     * @param int $status_code
      * @return void
      */
-    public function send_text($content, $status_code = 200)
+    public function send_text(
+        $content,
+        $status_code = 200
+    )
     {
-        $this->set_status_code($status_code);
-        $this->set_text_content($content);
+        $this->set_status_code(
+            $status_code
+        );
+
+        $this->set_text_content(
+            $content
+        );
+
         $this->send();
     }
 
+
     /**
-     * Send XML response
+     * Send XML
      *
-     * @param  string $xml
-     * @param  int    $status_code
+     * @param string $xml
+     * @param int $status_code
      * @return void
      */
-    public function send_xml($xml, $status_code = 200)
+    public function send_xml(
+        $xml,
+        $status_code = 200
+    )
     {
-        $this->set_status_code($status_code);
-        $this->set_xml_content($xml);
+        $this->set_status_code(
+            $status_code
+        );
+
+        $this->set_xml_content(
+            $xml
+        );
+
         $this->send();
     }
 
+
     /**
-     * Send HTTP 204 No Content response
+     * Send 204 No Content
      *
      * @return void
      */
     public function send_no_content()
     {
         $this->set_status_code(204);
+
         $this->set_content(NULL);
+
         $this->send();
     }
 
+
     /**
-     * Send HTTP 201 Created response with optional Location header
+     * Send 201 Created
      *
-     * @param  mixed       $data
-     * @param  string|null $location  URI of the newly created resource
+     * @param mixed $data
+     * @param string|null $location
      * @return void
      */
-    public function send_created($data = NULL, $location = NULL)
+    public function send_created(
+        $data = NULL,
+        $location = NULL
+    )
     {
         if ($location !== NULL)
         {
-            $this->add_header('Location', $location);
+            $this->add_header(
+                'Location',
+                $location
+            );
         }
 
-        $this->send_json_success($data, 'Created', 201);
+        $this->send_json_success(
+            $data,
+            'Created',
+            201
+        );
     }
 
-    /**
-     * Send HTTP 401 Unauthorized response
-     *
-     * @param  string $message
-     * @return void
-     */
-    public function send_unauthorized($message = 'Unauthorized')
-    {
-        $this->send_json_error($message, 401);
-    }
 
     /**
-     * Send HTTP 403 Forbidden response
+     * Send 401
      *
-     * @param  string $message
+     * @param string $message
      * @return void
      */
-    public function send_forbidden($message = 'Forbidden')
+    public function send_unauthorized(
+        $message = 'Unauthorized'
+    )
     {
-        $this->send_json_error($message, 403);
+        $this->send_json_error(
+            $message,
+            401
+        );
     }
 
-    /**
-     * Send HTTP 404 Not Found response
-     *
-     * @param  string $message
-     * @return void
-     */
-    public function send_not_found($message = 'Not found')
-    {
-        $this->send_json_error($message, 404);
-    }
 
     /**
-     * Send HTTP 405 Method Not Allowed response
+     * Send 403
      *
-     * @param  array  $allowed  List of allowed HTTP methods
-     * @param  string $message
+     * @param string $message
      * @return void
      */
-    public function send_method_not_allowed($allowed = array(), $message = 'Method not allowed')
+    public function send_forbidden(
+        $message = 'Forbidden'
+    )
     {
-        if ( ! empty($allowed))
+        $this->send_json_error(
+            $message,
+            403
+        );
+    }
+
+
+    /**
+     * Send 404
+     *
+     * @param string $message
+     * @return void
+     */
+    public function send_not_found(
+        $message = 'Not found'
+    )
+    {
+        $this->send_json_error(
+            $message,
+            404
+        );
+    }
+
+
+    /**
+     * Send 405
+     *
+     * @param array $allowed
+     * @param string $message
+     * @return void
+     */
+    public function send_method_not_allowed(
+        $allowed = array(),
+        $message = 'Method not allowed'
+    )
+    {
+        if (!empty($allowed))
         {
-            $this->add_header('Allow', implode(', ', array_map('strtoupper', $allowed)));
+            $this->add_header(
+                'Allow',
+                implode(
+                    ', ',
+                    array_map(
+                        'strtoupper',
+                        $allowed
+                    )
+                )
+            );
         }
 
-        $this->send_json_error($message, 405);
+        $this->send_json_error(
+            $message,
+            405
+        );
     }
 
+
     /**
-     * Send HTTP 429 Too Many Requests response
+     * Send 429
      *
-     * @param  string   $message
-     * @param  int|null $retry_after  Seconds before the client may retry
+     * @param string $message
+     * @param int|null $retry_after
      * @return void
      */
-    public function send_too_many_requests($message = 'Too many requests', $retry_after = NULL)
+    public function send_too_many_requests(
+        $message = 'Too many requests',
+        $retry_after = NULL
+    )
     {
         if ($retry_after !== NULL)
         {
-            $this->add_header('Retry-After', (int) $retry_after);
+            $this->add_header(
+                'Retry-After',
+                (int) $retry_after
+            );
         }
 
-        $this->send_json_error($message, 429);
+        $this->send_json_error(
+            $message,
+            429
+        );
     }
 
+
     /**
-     * Send HTTP 500 Internal Server Error response
+     * Send 500
      *
-     * @param  string $message
+     * @param string $message
      * @return void
      */
-    public function send_server_error($message = 'Internal server error')
+    public function send_server_error(
+        $message = 'Internal server error'
+    )
     {
-        $this->send_json_error($message, 500);
+        $this->send_json_error(
+            $message,
+            500
+        );
     }
+
 
     // ---------------------------------------------------------------
     // FILE & STREAMING
     // ---------------------------------------------------------------
 
     /**
-     * Serve a file as a downloadable attachment
+     * Download file
      *
-     * @param  string      $filepath  Absolute path to the file
-     * @param  string|null $filename  Custom download filename
-     * @param  array       $headers   Additional headers
+     * @param string $filepath
+     * @param string|null $filename
+     * @param array $headers
      * @return void
      */
-    public function download($filepath, $filename = NULL, $headers = array())
+    public function download(
+        $filepath,
+        $filename = NULL,
+        $headers = array()
+    )
     {
-        if ( ! file_exists($filepath))
+        if (!file_exists($filepath))
         {
-            $this->set_status_code(404)->set_content('File not found')->send();
+            $this->set_status_code(404)
+                ->set_content('File not found')
+                ->send();
+
             return;
         }
 
@@ -835,86 +1274,179 @@ class Response
         $filesize = filesize($filepath);
 
         $this->set_status_code(200);
-        $this->add_header('Content-Description', 'File Transfer');
-        $this->add_header('Content-Type', mime_content_type($filepath));
-        $this->add_header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-        $this->add_header('Content-Transfer-Encoding', 'binary');
-        $this->add_header('Content-Length', $filesize);
-        $this->add_header('Cache-Control', 'private');
-        $this->add_header('Pragma', 'public');
-        $this->add_header('Expires', '0');
 
-        foreach ($headers as $name => $value)
+        $this->add_header(
+            'Content-Description',
+            'File Transfer'
+        );
+
+        $this->add_header(
+            'Content-Type',
+            mime_content_type($filepath)
+        );
+
+        $this->add_header(
+            'Content-Disposition',
+            'attachment; filename="' . $filename . '"'
+        );
+
+        $this->add_header(
+            'Content-Transfer-Encoding',
+            'binary'
+        );
+
+        $this->add_header(
+            'Content-Length',
+            $filesize
+        );
+
+        $this->add_header(
+            'Cache-Control',
+            'private'
+        );
+
+        $this->add_header(
+            'Pragma',
+            'public'
+        );
+
+        $this->add_header(
+            'Expires',
+            '0'
+        );
+
+        foreach (
+            $headers
+            as $name => $value
+        )
         {
-            $this->add_header($name, $value);
+            $this->add_header(
+                $name,
+                $value
+            );
         }
 
         $this->send_headers();
 
-        $handle = fopen($filepath, 'rb');
-        while ( ! feof($handle))
+        $handle = fopen(
+            $filepath,
+            'rb'
+        );
+
+        while (!feof($handle))
         {
-            echo fread($handle, 8192);
+            echo fread(
+                $handle,
+                8192
+            );
+
             flush();
         }
+
         fclose($handle);
     }
 
+
     /**
-     * Serve a file inline in the browser (e.g. PDF, image) instead of forcing a download
+     * Inline file
      *
-     * @param  string      $filepath
-     * @param  string|null $filename
+     * @param string $filepath
+     * @param string|null $filename
      * @return void
      */
-    public function inline($filepath, $filename = NULL)
+    public function inline(
+        $filepath,
+        $filename = NULL
+    )
     {
-        if ( ! file_exists($filepath))
+        if (!file_exists($filepath))
         {
-            $this->set_status_code(404)->set_content('File not found')->send();
+            $this->set_status_code(404)
+                ->set_content('File not found')
+                ->send();
+
             return;
         }
 
         $filename = $filename ?: basename($filepath);
 
         $this->set_status_code(200);
-        $this->add_header('Content-Type', mime_content_type($filepath));
-        $this->add_header('Content-Disposition', 'inline; filename="' . $filename . '"');
-        $this->add_header('Content-Length', filesize($filepath));
-        $this->add_header('Cache-Control', 'public, max-age=86400');
+
+        $this->add_header(
+            'Content-Type',
+            mime_content_type($filepath)
+        );
+
+        $this->add_header(
+            'Content-Disposition',
+            'inline; filename="' . $filename . '"'
+        );
+
+        $this->add_header(
+            'Content-Length',
+            filesize($filepath)
+        );
+
+        $this->add_header(
+            'Cache-Control',
+            'public, max-age=86400'
+        );
 
         $this->send_headers();
 
-        $handle = fopen($filepath, 'rb');
-        while ( ! feof($handle))
+        $handle = fopen(
+            $filepath,
+            'rb'
+        );
+
+        while (!feof($handle))
         {
-            echo fread($handle, 8192);
+            echo fread(
+                $handle,
+                8192
+            );
+
             flush();
         }
+
         fclose($handle);
     }
 
+
     /**
-     * Stream content to the browser via a callback
-     * Useful for large datasets, NDJSON, or server-sent events.
+     * Stream
      *
-     * @param  callable $callback  Function that outputs content
-     * @param  array    $headers   Optional additional headers
+     * @param callable $callback
+     * @param array $headers
      * @return void
      */
-    public function stream($callback, $headers = array())
+    public function stream(
+        $callback,
+        $headers = array()
+    )
     {
-        if ( ! is_callable($callback))
+        if (!is_callable($callback))
         {
-            $this->set_status_code(500)->send();
+            $this->set_status_code(500)
+                ->send();
+
             return;
         }
 
-        $this->add_header('Cache-Control', 'no-cache');
+        $this->add_header(
+            'Cache-Control',
+            'no-cache'
+        );
 
-        foreach ($headers as $name => $value)
+        foreach (
+            $headers
+            as $name => $value
+        )
         {
-            $this->add_header($name, $value);
+            $this->add_header(
+                $name,
+                $value
+            );
         }
 
         $this->send_headers();
@@ -922,141 +1454,222 @@ class Response
         call_user_func($callback);
     }
 
+
     /**
-     * Send a Server-Sent Events (SSE) stream
-     * Sets the correct Content-Type and keeps the connection open.
+     * Server Sent Events
      *
-     * @param  callable $callback  Function that emits SSE-formatted events
+     * @param callable $callback
      * @return void
      */
-    public function send_event_stream($callback)
+    public function send_event_stream(
+        $callback
+    )
     {
         if (ob_get_level())
         {
             ob_end_clean();
         }
 
-        $this->stream($callback, array(
-            'Content-Type'  => 'text/event-stream',
-            'X-Accel-Buffering' => 'no',
-        ));
+        $this->stream(
+            $callback,
+            array(
+                'Content-Type' =>
+                    'text/event-stream',
+
+                'X-Accel-Buffering' =>
+                    'no',
+            )
+        );
     }
+
 
     // ---------------------------------------------------------------
     // REDIRECTS
     // ---------------------------------------------------------------
 
     /**
-     * Redirect to a URL
+     * Redirect
      *
-     * @param  string $url
-     * @param  int    $status_code  Must be one of: 301, 302, 303, 307, 308
+     * @param string $url
+     * @param int $status_code
      * @return void
      */
-    public function redirect($url, $status_code = 302)
+    public function redirect(
+        $url,
+        $status_code = 302
+    )
     {
-        $valid_codes = array(301, 302, 303, 307, 308);
+        $valid_codes = array(
+            301,
+            302,
+            303,
+            307,
+            308
+        );
 
-        if ( ! in_array($status_code, $valid_codes))
+        if (!in_array(
+            $status_code,
+            $valid_codes
+        ))
         {
             $status_code = 302;
         }
 
-        $this->set_status_code($status_code);
-        $this->add_header('Location', $url);
+        $this->set_status_code(
+            $status_code
+        );
+
+        $this->add_header(
+            'Location',
+            $url
+        );
+
         $this->send();
+
         exit;
     }
 
+
     /**
-     * Permanent redirect (301)
+     * Permanent redirect
      *
-     * @param  string $url
+     * @param string $url
      * @return void
      */
     public function redirect_permanent($url)
     {
-        $this->redirect($url, 301);
+        $this->redirect(
+            $url,
+            301
+        );
     }
 
+
     /**
-     * Post/Redirect/Get redirect (303 See Other)
-     * Use after a successful form POST to prevent re-submission on refresh.
+     * Redirect after POST
      *
-     * @param  string $url
+     * @param string $url
      * @return void
      */
     public function redirect_after_post($url)
     {
-        $this->redirect($url, 303);
+        $this->redirect(
+            $url,
+            303
+        );
     }
+
 
     /**
-     * Redirect back to the referring page
+     * Redirect back
      *
-     * @param  string $fallback  Fallback URL if referrer is unavailable
+     * @param string $fallback
      * @return void
      */
-    public function back($fallback = '/')
+    public function back(
+        $fallback = '/'
+    )
     {
-        $lava     = lava_instance();
-        $referrer = isset($lava->request) ? $lava->request->referrer() : NULL;
+        $lava = lava_instance();
 
-        $this->redirect($referrer ?: $fallback);
+        $referrer = isset($lava->request)
+            ? $lava->request->referrer()
+            : NULL;
+
+        $this->redirect(
+            $referrer ?: $fallback
+        );
     }
+
 
     // ---------------------------------------------------------------
     // COOKIES
     // ---------------------------------------------------------------
 
     /**
-     * Queue a cookie to be sent with the response
+     * Set cookie
      *
-     * @param  string  $name
-     * @param  string  $value
-     * @param  int     $expiration  Seconds from now. 0 = session cookie.
-     * @param  string  $path
-     * @param  string  $domain
-     * @param  boolean $secure
-     * @param  boolean $httponly
-     * @param  string  $samesite    'Lax', 'Strict', or 'None'
+     * @param string $name
+     * @param string $value
+     * @param int $expiration
+     * @param string $path
+     * @param string $domain
+     * @param boolean $secure
+     * @param boolean $httponly
+     * @param string $samesite
      * @return $this
      */
-    public function set_cookie($name, $value = '', $expiration = 0, $path = '', $domain = '', $secure = FALSE, $httponly = FALSE, $samesite = 'Lax')
+    public function set_cookie(
+        $name,
+        $value = '',
+        $expiration = 0,
+        $path = '',
+        $domain = '',
+        $secure = FALSE,
+        $httponly = FALSE,
+        $samesite = 'Lax'
+    )
     {
         $this->cookies[] = array(
-            'name'       => $name,
-            'value'      => $value,
-            'expiration' => $expiration,
-            'path'       => $path,
-            'domain'     => $domain,
-            'secure'     => $secure,
-            'httponly'   => $httponly,
-            'samesite'   => $samesite,
+            'name' =>
+                $name,
+
+            'value' =>
+                $value,
+
+            'expiration' =>
+                $expiration,
+
+            'path' =>
+                $path,
+
+            'domain' =>
+                $domain,
+
+            'secure' =>
+                $secure,
+
+            'httponly' =>
+                $httponly,
+
+            'samesite' =>
+                $samesite,
         );
 
         return $this;
     }
 
+
     /**
-     * Expire a cookie immediately
+     * Delete cookie
      *
-     * @param  string $name
-     * @param  string $path
-     * @param  string $domain
+     * @param string $name
+     * @param string $path
+     * @param string $domain
      * @return $this
      */
-    public function delete_cookie($name, $path = '', $domain = '')
+    public function delete_cookie(
+        $name,
+        $path = '',
+        $domain = ''
+    )
     {
-        return $this->set_cookie($name, '', -3600, $path, $domain);
+        return $this->set_cookie(
+            $name,
+            '',
+            -3600,
+            $path,
+            $domain
+        );
     }
+
 
     // ---------------------------------------------------------------
     // UTILITY
     // ---------------------------------------------------------------
 
     /**
-     * Reset the response to its default state
+     * Clear response
      *
      * @return $this
      */
@@ -1071,24 +1684,32 @@ class Response
         return $this;
     }
 
+
     /**
-     * Return a snapshot of the current response state as an array
-     * Useful for testing or logging.
+     * Return response as array
      *
      * @return array
      */
     public function to_array()
     {
         return array(
-            'status_code' => $this->status_code,
-            'status_text' => $this->get_status_text(),
-            'headers'     => $this->headers,
-            'content'     => $this->content,
+            'status_code' =>
+                $this->status_code,
+
+            'status_text' =>
+                $this->get_status_text(),
+
+            'headers' =>
+                $this->headers,
+
+            'content' =>
+                $this->content,
         );
     }
 
+
     /**
-     * Magic method — returns the response body as a string
+     * Magic method
      *
      * @return string
      */

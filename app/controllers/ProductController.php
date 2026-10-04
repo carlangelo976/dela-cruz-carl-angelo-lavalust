@@ -38,14 +38,14 @@ class ProductController extends Controller
 
         $data['products'] = $this->ProductModel->getAll();
 
-        $this->call->view('api-products', $data);
+$this->call->view('api-products', $data);
     }
 
 
     // =====================================================
-    // API - GET ALL PRODUCTS
-    // GET /api/products
-    // =====================================================
+// API - GET ALL PRODUCTS
+// GET /api/products
+// =====================================================
 
     public function apiIndex()
     {
@@ -181,6 +181,11 @@ class ProductController extends Controller
         }
 
 
+        // create() returns the id of the inserted row. Send it back so the
+        // client can address the new product without refetching the list.
+        $product['id'] = $created;
+
+
         return $this->api->respond([
             'status' => true,
             'message' => 'Product created successfully',
@@ -196,7 +201,7 @@ class ProductController extends Controller
 
     public function apiUpdate($id)
     {
-        $this->api->require_method('PUT');
+        $this->api->require_method('PUT', 'PATCH');
 
 
         // Check if product exists
@@ -217,11 +222,12 @@ class ProductController extends Controller
 
 
         // Prepare updated data
+        // getById() returns an associative array, not an object.
         $update = [
-            'product_name' => $data['product_name'] ?? $existing->product_name,
-            'description' => $data['description'] ?? $existing->description,
-            'price' => $data['price'] ?? $existing->price,
-            'quantity' => $data['quantity'] ?? $existing->quantity,
+            'product_name' => $data['product_name'] ?? $existing['product_name'],
+            'description' => $data['description'] ?? $existing['description'],
+            'price' => $data['price'] ?? $existing['price'],
+            'quantity' => $data['quantity'] ?? $existing['quantity'],
         ];
 
 

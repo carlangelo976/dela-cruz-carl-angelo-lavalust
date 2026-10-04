@@ -204,7 +204,85 @@ class Api
             show_error('jwt_secret and refresh_token_key must be different values.');
         }
 
-        //handle_cors();
+        $this->handle_cors();
+    }
+
+    /**
+     * is_preflight
+     *
+     * True when the browser is asking permission before sending the real
+     * request. Preflights are never meant to reach a controller action.
+     *
+     * @return boolean
+     */
+    private function is_preflight()
+    {
+        return ($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS'
+            && isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']);
+    }
+
+    /**
+     * allowed_origins
+     *
+     * allow_origin may hold a single origin or a comma separated list.
+     *
+     * @param  string $allow
+     * @return array
+     */
+    private function allowed_origins($allow)
+    {
+        return array_values(array_filter(array_map('trim', explode(',', (string) $allow))));
+    }
+
+    /**
+     * handle_cors
+     *
+     * Sends the CORS headers for every API response and answers preflight
+     * requests. respond() writes the body itself instead of going through
+     * the Response kernel class, so the headers have to be set here.
+     *
+     * @return void
+     */
+    public function handle_cors()
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        $allow  = trim((string) ($this->allow_origin ?: '*'));
+
+        /*
+         * Echo the caller's origin back instead of "*" so clients that send
+         * an Authorization header or credentials are not rejected. "*" is
+         * kept for requests that carry no Origin at all (curl, server side).
+         */
+        if ($allow === '*') {
+            $allow_origin = $origin !== '' ? $origin : '*';
+        } elseif ($origin !== '' && in_array($origin, $this->allowed_origins($allow), true)) {
+            $allow_origin = $origin;
+        } else {
+            // Not an allowed origin: send no header and let the browser block it.
+            $allow_origin = '';
+        }
+
+        if ($allow_origin !== '') {
+            header('Access-Control-Allow-Origin: ' . $allow_origin);
+            header('Vary: Origin');
+        }
+
+        header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept, X-Requested-With');
+        header('Access-Control-Max-Age: 86400');
+
+        /*
+         * The browser only needs a successful, header carrying, empty
+         * response here. The real request follows on its own.
+         */
+        if ($this->is_preflight()) {
+            http_response_code(204);
+            exit;
+        }
     }
 
     /**
@@ -279,16 +357,23 @@ class Api
         return $data;
     }
 
-    /**
+/**
      * require_method
      *
-     * @param string $method
+     * Stops the request when the current verb is not one of the accepted
+     * ones. Pass more than one to allow alternatives, e.g. PUT and PATCH
+     * for the same update endpoint.
+     *
+     * @param string ...$methods
      * @return void
      */
-    public function require_method(string $method)
+    public function require_method(string ...$methods)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== strtoupper($method)) {
-            $this->respond_error("Method Not Allowed", 405);
+        $accepted = array_map('strtoupper', $methods);
+
+        if (!in_array(strtoupper($_SERVER['REQUEST_METHOD'] ?? ''), $accepted, true)) {
+            header('Allow: ' . implode(', ', $accepted));
+$this->respond_error("Method Not Allowed", 405);
         }
     }
 
@@ -385,6 +470,11 @@ class Api
     public function respond($data, $code = 200)
     {
         http_response_code($code);
+
+        if (!headers_sent()) {
+            header('Content-Type: application/json; charset=utf-8');
+        }
+
         echo json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         exit;
     }

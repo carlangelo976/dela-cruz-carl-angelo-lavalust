@@ -33,9 +33,12 @@ $router->match(
 );
 
 // React API login
-$router->post(
+// OPTIONS is included so the browser preflight reaches the controller and
+// gets the CORS headers the Api library sends.
+$router->match(
     '/api/login',
-    'AuthController::apiLogin'
+    'AuthController::apiLogin',
+    ['POST', 'OPTIONS']
 );
 
 // Register
@@ -123,27 +126,32 @@ $router->get(
 // PRODUCT API ROUTES
 // =====================================================
 
-$router->get(
+$router->match(
     '/api/products',
-    'ProductController::apiIndex'
+    'ProductController::apiIndex',
+    ['GET', 'OPTIONS']
 );
 
-$router->post(
+$router->match(
     '/api/products',
-    'ProductController::apiCreate'
+    'ProductController::apiCreate',
+    ['POST', 'OPTIONS']
 );
 
-$router->put(
+$router->match(
     '/api/products/{id}',
-    'ProductController::apiUpdate'
+    'ProductController::apiUpdate',
+    ['PUT', 'OPTIONS']
 );
 
-$router->patch(
+$router->match(
     '/api/products/{id}',
-    'ProductController::apiUpdate'
+    'ProductController::apiUpdate',
+    ['PATCH', 'OPTIONS']
 );
 
-$router->delete(
+$router->match(
     '/api/products/{id}',
-    'ProductController::apiDelete'
+    'ProductController::apiDelete',
+    ['DELETE', 'OPTIONS']
 );

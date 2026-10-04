@@ -22,7 +22,19 @@ class ProductModel extends Model
 
     public function updateProduct($id, $data)
     {
-        return $this->db->table($this->table)->where('id', $id)->update($data);
+        $affected = $this->db->table($this->table)->where('id', $id)->update($data);
+
+        if ($affected > 0) {
+            return true;
+        }
+
+        /*
+         * The driver reports 0 changed rows when every submitted value
+         * already matches the stored one. That is a successful, idempotent
+         * update, not a failure, so confirm the row really exists before
+         * telling the caller that nothing was updated.
+         */
+        return (bool) $this->db->table($this->table)->where('id', $id)->get();
     }
 
     public function deleteProduct($id)
