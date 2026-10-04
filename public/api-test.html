@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Product</title>
+</head>
+
+<body>
+
+<h1>DELETE - Delete Product</h1>
+
+<label>Product ID:</label><br>
+
+<input type="number" id="product_id" value="2">
+
+<br><br>
+
+<button onclick="deleteProduct()">Delete Product</button>
+
+<h2>Delete Result:</h2>
+
+<pre id="result">Waiting...</pre>
+
+
+<script>
+
+async function deleteProduct() {
+
+    const id = document.getElementById("product_id").value;
+    const result = document.getElementById("result");
+
+    if (!id) {
+        result.textContent = "Please enter Product ID.";
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:3000/api/products/" + id,
+            {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json"
+                }
+            }
+        );
+
+        const text = await response.text();
+
+        console.log("Status:", response.status);
+        console.log("Response:", text);
+
+        try {
+
+            const data = JSON.parse(text);
+
+            result.textContent =
+                JSON.stringify(data, null, 4);
+
+        } catch (error) {
+
+            result.textContent =
+                "SERVER RETURNED NON-JSON:\n\n" + text;
+        }
+
+    } catch (error) {
+
+        result.textContent =
+            "ERROR: " + error;
+    }
+}
+
+</script>
+
+</body>
+</html>
