@@ -11,7 +11,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f7;
             color: #1a1a1a;
-            min-height: 100vh;
+            min-height: 100vh; 
         }
 
         .container {
@@ -124,7 +124,7 @@
             color: #4f46e5;
             padding: 4px 12px;
             border-radius: 100px;
-            font-size: 12px;
+            font-size: 12px;====
             font-weight: 600;
             display: inline-block;
         }

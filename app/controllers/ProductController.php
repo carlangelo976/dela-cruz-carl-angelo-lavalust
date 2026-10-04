@@ -58,3 +58,4 @@ class ProductController extends Controller
         redirect('products');
     }
 }
+//Ang Controller naman ang nagha-handle ng request at nagdedesisyon kung ano ang gagawin.

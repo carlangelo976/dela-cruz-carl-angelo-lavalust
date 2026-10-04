@@ -30,3 +30,4 @@ class ProductModel extends Model
         return $this->db->table($this->table)->where('id', $id)->delete();
     }
 }
+//Ang Model ang kumakatawan sa data/database ng application.
