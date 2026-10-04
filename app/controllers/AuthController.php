@@ -14,52 +14,14 @@ class AuthController extends Controller
 
 
     // =====================================================
-    // NORMAL LOGIN + API LOGIN
+    // NORMAL LOGIN
     // GET  /login
     // POST /login
     // =====================================================
 
     public function login()
     {
-        // =============================================
-        // API / REACT LOGIN
-        // =============================================
-
-        if ($this->io->method() == 'post') {
-
-            $username = $this->io->post('username');
-            $password = $this->io->post('password');
-
-            if (!$username || !$password) {
-
-                return $this->api->respond_error(
-                    'Username and password are required',
-                    422
-                );
-            }
-
-            if ($this->auth->login($username, $password)) {
-
-                return $this->api->respond([
-                    'status' => true,
-                    'message' => 'Login successful',
-                    'user' => [
-                        'username' => $username
-                    ]
-                ], 200);
-            }
-
-            return $this->api->respond_error(
-                'Invalid username or password',
-                401
-            );
-        }
-
-
-        // =============================================
-        // NORMAL LAVALUST WEB LOGIN
-        // =============================================
-
+        // Kapag naka-login na, diretso sa API Products page
         if ($this->auth->is_logged_in()) {
             redirect('api-products');
         }
@@ -68,6 +30,21 @@ class AuthController extends Controller
             'error' => null
         ];
 
+        // Normal LavaLust login form
+        if ($this->io->method() == 'post') {
+
+            $username = $this->io->post('username');
+            $password = $this->io->post('password');
+
+            if ($this->auth->login($username, $password)) {
+
+                redirect('api-products');
+            }
+
+            $data['error'] = 'Invalid username or password.';
+        }
+
+        // Display normal HTML login page
         $this->call->view(
             'auth/login',
             $data
@@ -85,6 +62,7 @@ class AuthController extends Controller
         $username = $this->io->post('username');
         $password = $this->io->post('password');
 
+        // Validate username and password
         if (!$username || !$password) {
 
             return $this->api->respond_error(
@@ -93,6 +71,7 @@ class AuthController extends Controller
             );
         }
 
+        // Authenticate user
         if ($this->auth->login($username, $password)) {
 
             return $this->api->respond([
@@ -104,6 +83,7 @@ class AuthController extends Controller
             ], 200);
         }
 
+        // Invalid credentials
         return $this->api->respond_error(
             'Invalid username or password',
             401
@@ -113,6 +93,8 @@ class AuthController extends Controller
 
     // =====================================================
     // REGISTER
+    // GET  /register
+    // POST /register
     // =====================================================
 
     public function register()
@@ -149,12 +131,15 @@ class AuthController extends Controller
 
     // =====================================================
     // LOGOUT
+    // GET  /logout
+    // POST /logout
     // =====================================================
 
     public function logout()
     {
         $this->auth->logout();
 
+        // React/API logout
         if ($this->io->method() == 'post') {
 
             return $this->api->respond([
@@ -163,6 +148,7 @@ class AuthController extends Controller
             ], 200);
         }
 
+        // Normal browser logout
         redirect('login');
     }
 }
