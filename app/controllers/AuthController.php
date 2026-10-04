@@ -1,4 +1,5 @@
 <?php
+
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 class AuthController extends Controller
@@ -8,17 +9,20 @@ class AuthController extends Controller
         parent::__construct();
 
         $this->call->library('auth');
+        $this->call->library('api');
     }
 
 
     // =====================================================
-    // LOGIN
+    // NORMAL LOGIN + API LOGIN
+    // GET  /login
+    // POST /login
     // =====================================================
 
     public function login()
     {
         // =============================================
-        // REACT / API LOGIN
+        // API / REACT LOGIN
         // =============================================
 
         if ($this->io->method() == 'post') {
@@ -26,34 +30,29 @@ class AuthController extends Controller
             $username = $this->io->post('username');
             $password = $this->io->post('password');
 
-            // Check username/password
+            if (!$username || !$password) {
+
+                return $this->api->respond_error(
+                    'Username and password are required',
+                    422
+                );
+            }
+
             if ($this->auth->login($username, $password)) {
 
-                // Return JSON for React
-                header('Content-Type: application/json');
-
-                echo json_encode([
+                return $this->api->respond([
                     'status' => true,
-                    'message' => 'Login successful.',
+                    'message' => 'Login successful',
                     'user' => [
                         'username' => $username
                     ]
-                ]);
-
-                return;
+                ], 200);
             }
 
-            // Invalid login
-            header('Content-Type: application/json');
-
-            http_response_code(401);
-
-            echo json_encode([
-                'status' => false,
-                'message' => 'Invalid username or password.'
-            ]);
-
-            return;
+            return $this->api->respond_error(
+                'Invalid username or password',
+                401
+            );
         }
 
 
@@ -72,6 +71,42 @@ class AuthController extends Controller
         $this->call->view(
             'auth/login',
             $data
+        );
+    }
+
+
+    // =====================================================
+    // API LOGIN
+    // POST /api/login
+    // =====================================================
+
+    public function apiLogin()
+    {
+        $username = $this->io->post('username');
+        $password = $this->io->post('password');
+
+        if (!$username || !$password) {
+
+            return $this->api->respond_error(
+                'Username and password are required',
+                422
+            );
+        }
+
+        if ($this->auth->login($username, $password)) {
+
+            return $this->api->respond([
+                'status' => true,
+                'message' => 'Login successful',
+                'user' => [
+                    'username' => $username
+                ]
+            ], 200);
+        }
+
+        return $this->api->respond_error(
+            'Invalid username or password',
+            401
         );
     }
 
@@ -120,20 +155,14 @@ class AuthController extends Controller
     {
         $this->auth->logout();
 
-        // If React requests logout, return JSON
         if ($this->io->method() == 'post') {
 
-            header('Content-Type: application/json');
-
-            echo json_encode([
+            return $this->api->respond([
                 'status' => true,
                 'message' => 'Logout successful.'
-            ]);
-
-            return;
+            ], 200);
         }
 
-        // Normal browser logout
         redirect('login');
     }
 }
